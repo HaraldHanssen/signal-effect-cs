@@ -1,6 +1,6 @@
 namespace SignalEffect;
 
-public interface IEffect
+public interface IEffect : IPrimitive
 {
 
     public Action Call { get; }

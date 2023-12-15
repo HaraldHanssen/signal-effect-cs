@@ -1,6 +1,6 @@
 namespace SignalEffect;
 
-internal abstract class Primitive
+internal abstract class Primitive : IPrimitive
 {
     internal Primitive(NodeId id, Node self)
     {
