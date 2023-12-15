@@ -1,5 +1,5 @@
-# signal-effect
-Reactive signal library without any dependencies.
+# signal-effect-cs
+Reactive signal library without any dependencies. (In progress)
 
 ## The signal library contains three types of primitives:
 
@@ -229,18 +229,19 @@ Notes:
 - Immediate is somewhat slower (in this test) since this strategy executes all affected dependencies each time a single change has occurred.
 
 ## TODOs
+- [ ] (In Progress) Move logic from signal-effect into signal-effect-cs 
 - [ ] Scoped execution handlers.  
 - [ ] Scoped create and drop. Track creation of primitives and drop them together.
-- [x] Allow internal modification of objects and arrays without set. Avoids the need to reconstruct the entire object/array.
-- [x] Automatic dependency discovery for deriveds and effects. Just provide the callback and the rest is figured out.
-- [x] Explicit removal of effects and deriveds (drop). Useful in Immediate/Delayed execution.
-- [x] Custom execution handlers.
-- [x] Support reading (of independent) signals in effect calculations.
-- [x] Support writing to signals from effect calculations
-- [x] Throw error when setting a readonly signal directly. Should exhibit the same behavior as when it is used as a property.
+- [ ] Allow internal modification of objects and arrays without set. Avoids the need to reconstruct the entire object/array.
+- [ ] Automatic dependency discovery for deriveds and effects. Just provide the callback and the rest is figured out.
+- [ ] Explicit removal of effects and deriveds (drop). Useful in Immediate/Delayed execution.
+- [ ] Custom execution handlers.
+- [ ] Support reading (of independent) signals in effect calculations.
+- [ ] Support writing to signals from effect calculations
+- [ ] Throw error when setting a readonly signal directly. Should exhibit the same behavior as when it is used as a property.
 - ...
 
 
 ## About
-Yet another signal library?! This library was created just for the fun of it. I was curious of the "sudden leap" to a signal system in Svelte and Angular, and wanted to see how such a system could be constructed. The big frameworks provide their own signalling. Use them. In other settings this library might be a useful replacement. Try it out if you like.
+Signal systems are becoming the de-facto standard for reactivity in js/ts land. This C# library is based on my signal-effect implementation for js/ts. The C# variant is still in progress, visit later.
 
