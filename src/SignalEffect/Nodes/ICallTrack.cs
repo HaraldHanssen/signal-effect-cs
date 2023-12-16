@@ -12,6 +12,8 @@ internal interface ICallTrack
     
     void Enter();
 
+    void Handle(DependentNode dependentNode, SequenceNumber current);
+
     void Exit();
 }
 

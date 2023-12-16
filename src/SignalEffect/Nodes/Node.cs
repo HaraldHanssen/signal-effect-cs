@@ -20,7 +20,7 @@ internal abstract class Node
         Current = current;
     }
 
-    protected void Notify(SequenceNumber current) {
+    public void Notify(SequenceNumber current) {
         //TODO if (diagnostic?.enabled) diagnostic.counters.notify++;
         // Notify execution handler
         List<IDerived> deriveds = [];
@@ -75,11 +75,6 @@ internal abstract class Node
         finally {
             Track.State = prev;
         }
-    }
-    
-    protected void Handle(DependentNode dependentNode, SequenceNumber current)
-    {
-        throw new NotImplementedException();
     }
 
     internal static void Link(IValueNode source, DependentNode target)

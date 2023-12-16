@@ -168,6 +168,9 @@ public class Scope : IDisposable
     {
         private readonly Scope m_Scope;
         private readonly IExecution m_Handler;
+        private readonly List<(Node, SequenceNumber)> m_Handles = [];
+        private uint m_Depth;
+        private bool m_Processing;
 
         public CallTrack(Scope scope, IExecution handler)
         {
@@ -195,12 +198,35 @@ public class Scope : IDisposable
 
         public void Enter()
         {
-            throw new NotImplementedException();
+            m_Depth++;
+        }
+
+        public void Handle(DependentNode dependentNode, SequenceNumber current)
+        {
+            m_Handles.Add((dependentNode, current));
         }
 
         public void Exit()
         {
-            throw new NotImplementedException();
+            m_Depth--;
+            if (m_Depth == 0 && !m_Processing) {
+                try {
+                    m_Processing = true;
+                    for (var i = 0; i < m_Handles.Count; i++) {
+                        var (n, s) = m_Handles[i];
+                        n.Notify(s);
+                    }
+
+                    // TODO
+                    // if (diagnostic?.enabled && diagnostic.counters.maxHandles < handles.length) {
+                    //     diagnostic.counters.maxHandles = handles.length;
+                    // }
+
+                    m_Handles.Clear();
+                } finally {
+                    m_Processing = false;
+                }
+            }
         }
     }
 }

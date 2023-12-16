@@ -54,7 +54,7 @@ internal abstract class DependentNode : Node
 
         if (notify)
         {
-            Handle(this, Current);
+            Track.Handle(this, Current);
         }
     }
 }
