@@ -1,8 +1,8 @@
 namespace SignalEffect;
 
-public abstract class SignalException : Exception
+public class SignalException : Exception
 {
-    protected SignalException(string? message) : base(message)
+    public SignalException(string? message) : base(message)
     {
     }
 }
