@@ -4,6 +4,7 @@ namespace SignalEffect;
 public partial class Scope : IDisposable
 {
     private readonly CallTrack m_Track;
+    private bool m_Disposed;
 
     public Scope(IExecution? handler = null)
     {
@@ -11,10 +12,6 @@ public partial class Scope : IDisposable
     }
 
     public static readonly Scope Default = new();
-
-    public void Dispose()
-    {
-    }
 
     /// <summary>
     /// Create a single writable signal with the provided initial value.
@@ -122,45 +119,57 @@ public partial class Scope : IDisposable
     }
 
     /// <inheritdoc cref="Effect(Action)"/>
-    public IEffect Effect<T, R>(IRead<R>[] r, Action<R[]> calc)
-    where T : notnull
+    public IEffect Effect<R>(IRead<R>[] r, Action<R[]> calc)
     {
         var ri = r.Select(x => x.ValueNode()).ToList();
         return FixedEffectNode.Effect(m_Track, ri, (v) => calc(v.Select(x => (R)x).ToArray()));
     }
 
     /// <inheritdoc cref="Effect(Action)"/>
-    public IEffect Effect<T, R>(IRead<R> r, Action<R> calc)
-    where T : notnull
+    public IEffect Effect<R>(IRead<R> r, Action<R> calc)
     {
         return FixedEffectNode.Effect(m_Track, [r.ValueNode()], (v) => calc((R)v[0]));
     }
 
     /// <inheritdoc cref="Effect(Action)"/>
-    public IEffect Effect<T, R1, R2>(IRead<R1> r1, IRead<R2> r2, Action<R1, R2> calc)
-    where T : notnull
+    public IEffect Effect<R1, R2>(IRead<R1> r1, IRead<R2> r2, Action<R1, R2> calc)
     {
         return FixedEffectNode.Effect(m_Track, [r1.ValueNode(), r2.ValueNode()], (v) => calc((R1)v[0], (R2)v[1]));
     }
 
     /// <inheritdoc cref="Effect(Action)"/>
-    public IEffect Effect<T, R1, R2, R3>(IRead<R1> r1, IRead<R2> r2, IRead<R3> r3, Action<R1, R2, R3> calc)
-    where T : notnull
+    public IEffect Effect<R1, R2, R3>(IRead<R1> r1, IRead<R2> r2, IRead<R3> r3, Action<R1, R2, R3> calc)
     {
         return FixedEffectNode.Effect(m_Track, [r1.ValueNode(), r2.ValueNode(), r3.ValueNode()], (v) => calc((R1)v[0], (R2)v[1], (R3)v[2]));
     }
 
     /// <inheritdoc cref="Effect(Action)"/>
-    public IEffect Effect<T, R1, R2, R3, R4>(IRead<R1> r1, IRead<R2> r2, IRead<R3> r3, IRead<R4> r4, Action<R1, R2, R3, R4> calc)
-    where T : notnull
+    public IEffect Effect<R1, R2, R3, R4>(IRead<R1> r1, IRead<R2> r2, IRead<R3> r3, IRead<R4> r4, Action<R1, R2, R3, R4> calc)
     {
         return FixedEffectNode.Effect(m_Track, [r1.ValueNode(), r2.ValueNode(), r3.ValueNode(), r4.ValueNode()], (v) => calc((R1)v[0], (R2)v[1], (R3)v[2], (R4)v[3]));
     }
 
     /// <inheritdoc cref="Effect(Action)"/>
-    public IEffect Effect<T, R1, R2, R3, R4, R5>(IRead<R1> r1, IRead<R2> r2, IRead<R3> r3, IRead<R4> r4, IRead<R5> r5, Action<R1, R2, R3, R4, R5> calc)
-    where T : notnull
+    public IEffect Effect<R1, R2, R3, R4, R5>(IRead<R1> r1, IRead<R2> r2, IRead<R3> r3, IRead<R4> r4, IRead<R5> r5, Action<R1, R2, R3, R4, R5> calc)
     {
         return FixedEffectNode.Effect(m_Track, [r1.ValueNode(), r2.ValueNode(), r3.ValueNode(), r4.ValueNode(), r5.ValueNode()], (v) => calc((R1)v[0], (R2)v[1], (R3)v[2], (R4)v[3], (R5)v[4]));
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (m_Disposed) return;
+
+        if (disposing)
+        {
+            // TODO: dispose managed state (managed objects)
+        }
+
+        m_Disposed = true;
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }
