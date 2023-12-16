@@ -15,24 +15,24 @@ internal class FixedEffectNode : EffectNode
     protected override void Do(SequenceNumber check)
     {
         var values = m_Deps.Select(x => x.GetValue(check)).ToArray();
-        //TODO const prev = track;
+        var prev = Track.State;
         try
         {
-            //TODO track = { deps: undefined, nocall: true, nowrite: true };
+            Track.State = new CallState(null, true, true);
             Visited = true;
             m_Callback(values);
         }
         finally
         {
             Visited = false;
-            //TODO track = prev;
+            Track.State = prev;
         }
         Update(m_Deps, false, false);
     }
 
     public static Effect Effect(ICallTrack track, List<IValueNode> dependencies, Action<object[]> action) {
         var e = new FixedEffectNode(track, dependencies, action).AsEffect();
-        //TODO execution.handler.changed(undefined, undefined, [e]);
+        track.Add(e);
         return e;
     }
 }

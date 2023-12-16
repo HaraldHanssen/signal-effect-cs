@@ -12,24 +12,24 @@ internal class DynamicEffectNode : EffectNode
     protected override void Do(SequenceNumber check)
     {
         var deps = new List<IValueNode>();
-        //TODO const prev = track;
+        var prev = Track.State;
         try
         {
-            //TODO track = { deps, nocall: true, nowrite: true };
+            Track.State = new CallState(deps, true, true);
             Visited = true;
             m_Callback();
         }
         finally
         {
             Visited = false;
-            //TODO track = prev;
+            Track.State = prev;
         }
         Update(deps, true, false);
     }
 
     public static Effect Effect(ICallTrack track, Action action) {
         var e = new DynamicEffectNode(track, action).AsEffect();
-        //TODO execution.handler.changed(undefined, undefined, [e]);
+        track.Add(e);
         return e;
     }
 }

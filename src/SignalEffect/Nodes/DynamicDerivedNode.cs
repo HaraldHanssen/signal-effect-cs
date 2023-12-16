@@ -14,17 +14,17 @@ where T : notnull
     {
         var deps = new List<IValueNode>();
         var val = m_Value;
-        //TODO const prev = track;
+        var prev = Track.State;
         try
         {
-            //TODO track = { deps, nocall: true, nowrite: true };
+            Track.State = new CallState(deps, true, true);
             Visited = true;
             m_Value = m_Callback();
         }
         finally
         {
             Visited = false;
-            //TODO track = prev;
+            Track.State = prev;
         }
         Update(deps, true, !Equals(val, m_Value));
     }
@@ -32,7 +32,7 @@ where T : notnull
     public static Derived<T> Derived(ICallTrack track, Func<T> calculation)
     {
         var d = new DynamicDerivedNode<T>(track, calculation).AsDerived();
-        //TODO execution.handler.changed(undefined, [d], undefined);
+        track.Add(d);
         return d;
     }
 

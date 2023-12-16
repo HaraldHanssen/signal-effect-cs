@@ -18,24 +18,23 @@ where T : notnull
         return new Derived<T>(Id, this, Fun);
     }
 
-
     public T Value(SequenceNumber check)
     {
         if (Visited) throw new ReentryException(ReentryException.ERR_LOOP);
-        //TODO track.deps?.push(this);
+        Track.State.Dependencies?.Add(this);
         if (!Dropped && check > Checked)
         {
             if (Dirty)
             {
                 try
                 {
-                    //TODO enter();
+                    Track.Enter();
                     Do(check);
                     Dirty = false;
                 }
                 finally
                 {
-                    //TODO exit();
+                    Track.Exit();
                 }
             }
 

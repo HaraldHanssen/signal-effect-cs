@@ -20,20 +20,20 @@ internal abstract class EffectNode : DependentNode
     {
         var check = CurrN();
         if (Visited) throw new ReentryException(ReentryException.ERR_LOOP);
-        //TODO if (track.nocall) throw new ReentryException(ReentryException.ERR_CALL);
+        if (Track.State.NoCall) throw new ReentryException(ReentryException.ERR_CALL);
         if (!Dropped && check > Checked)
         {
             if (Dirty)
             {
                 try
                 {
-                    //TODO enter();
+                    Track.Enter();
                     Do(check);
                     Dirty = false;
                 }
                 finally
                 {
-                    //exit();
+                    Track.Exit();
                 }
             }
 
