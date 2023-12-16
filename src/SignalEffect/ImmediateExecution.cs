@@ -1,8 +1,8 @@
 namespace SignalEffect;
 
-public class ImmediateExecutionHandler : IExecutionHandler
+public class ImmediateExecution : IExecution
 {
-    public void Changed(IReadOnlySignal? _, IList<IDerivedSignal>? deriveds, IList<IEffect>? effects)
+    public void Changed(IRead? _, IList<IDerived>? deriveds, IList<IEffect>? effects)
     {
         if (deriveds != null)
         {

@@ -1,10 +1,10 @@
 namespace SignalEffect;
 
-public interface IWritableSignal {
+public interface IWrite {
     public Action<object> SetValue { get; }
 }
 
 
-public interface IWritableSignal<T> : IWritableSignal {
+public interface IWrite<T> : IWrite {
     public Action<T> Set { get; }
 }

@@ -1,9 +1,9 @@
 namespace SignalEffect;
 
-public interface IReadOnlySignal : IPrimitive {
+public interface IRead : IPrimitive {
     public Func<object> GetValue { get; }
 }
 
-public interface IReadOnlySignal<T> : IReadOnlySignal {
+public interface IRead<T> : IRead {
     public Func<T> Get { get; }
 }

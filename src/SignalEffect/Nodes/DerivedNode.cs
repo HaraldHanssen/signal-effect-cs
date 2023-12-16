@@ -10,8 +10,8 @@ where T : notnull
         Out = [];
     }
 
-    public DerivedSignal<T> AsDerived() {
-        return new DerivedSignal<T>(Id, this, Fun);
+    public Derived<T> AsDerived() {
+        return new Derived<T>(Id, this, Fun);
     }
 
 

@@ -32,7 +32,7 @@ where T : notnull
         Update(m_Deps, false, !Equals(val, m_Value));
     }
 
-    public static DerivedSignal<T> Derived(List<IValueNode> dependencies, Func<object[], T> calculation)
+    public static Derived<T> Derived(List<IValueNode> dependencies, Func<object[], T> calculation)
     {
         var d = new FixedDerivedNode<T>(dependencies, calculation).AsDerived();
         //TODO execution.handler.changed(undefined, [d], undefined);

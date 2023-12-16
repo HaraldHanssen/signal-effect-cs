@@ -1,12 +1,12 @@
 namespace SignalEffect;
 
-public class ManualExecutionHandler : IExecutionHandler
+public class ManualExecution : IExecution
 {
-    public void Changed(IReadOnlySignal? source, IList<IDerivedSignal>? deriveds, IList<IEffect>? effects)
+    public void Changed(IRead? source, IList<IDerived>? deriveds, IList<IEffect>? effects)
     {
     }
 
-    public void Update(IEnumerable<IDerivedSignal> deriveds) {
+    public void Update(IEnumerable<IDerived> deriveds) {
         foreach (var item in deriveds)
         {
             item.GetValue();

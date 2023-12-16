@@ -1,11 +1,11 @@
 namespace SignalEffect;
 
-public class DelayedExecutionHandler : IExecutionHandler
+public class DelayedExecution : IExecution
 {
-    private Dictionary<NodeId, IDerivedSignal> m_Deriveds = [];
+    private Dictionary<NodeId, IDerived> m_Deriveds = [];
     private Dictionary<NodeId, IEffect> m_Effects = [];
 
-    public void Changed(IReadOnlySignal? _, IList<IDerivedSignal>? deriveds, IList<IEffect>? effects)
+    public void Changed(IRead? _, IList<IDerived>? deriveds, IList<IEffect>? effects)
     {
         if (deriveds != null)
         {
@@ -23,7 +23,7 @@ public class DelayedExecutionHandler : IExecutionHandler
         }        
     }
 
-    public (IEnumerable<IDerivedSignal>, IEnumerable<IEffect>) Update() {
+    public (IEnumerable<IDerived>, IEnumerable<IEffect>) Update() {
         var d = m_Deriveds;
         var e = m_Effects;
         m_Deriveds = [];

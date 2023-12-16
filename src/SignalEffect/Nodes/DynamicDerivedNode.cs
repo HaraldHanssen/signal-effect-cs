@@ -29,7 +29,7 @@ where T : notnull
         Update(deps, true, !Equals(val, m_Value));
     }
 
-    public static DerivedSignal<T> Derived(Func<T> calculation)
+    public static Derived<T> Derived(Func<T> calculation)
     {
         var d = new DynamicDerivedNode<T>(calculation).AsDerived();
         //TODO execution.handler.changed(undefined, [d], undefined);
