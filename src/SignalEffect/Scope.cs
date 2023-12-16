@@ -106,4 +106,57 @@ public class Scope : IDisposable
     {
         return FixedDerivedNode<T>.Derived([r1.ValueNode(), r2.ValueNode(), r3.ValueNode(), r4.ValueNode(), r5.ValueNode()], (v) => calc((R1)v[0], (R2)v[1], (R3)v[2], (R4)v[3], (R5)v[4]));
     }
+
+    /// <summary>
+    /// Create an effect/action from one or more sources.
+    /// To avoid side effects the action function is not allowed to reenter the signal system
+    /// to manually execute an effect. Reading and writing values to signals are allowed.
+    /// </summary>
+    public IEffect Effect(Action calc)
+    {
+        return DynamicEffectNode.Effect(calc);
+    }
+
+    /// <inheritdoc cref="Effect(Action)"/>
+    public IEffect Effect<T, R>(IRead<R>[] r, Action<R[]> calc)
+    where T : notnull
+    {
+        var ri = r.Select(x => x.ValueNode()).ToList();
+        return FixedEffectNode.Effect(ri, (v) => calc(v.Select(x => (R)x).ToArray()));
+    }
+
+    /// <inheritdoc cref="Effect(Action)"/>
+    public IEffect Effect<T, R>(IRead<R> r, Action<R> calc)
+    where T : notnull
+    {
+        return FixedEffectNode.Effect([r.ValueNode()], (v) => calc((R)v[0]));
+    }
+
+    /// <inheritdoc cref="Effect(Action)"/>
+    public IEffect Effect<T, R1, R2>(IRead<R1> r1, IRead<R2> r2, Action<R1, R2> calc)
+    where T : notnull
+    {
+        return FixedEffectNode.Effect([r1.ValueNode(), r2.ValueNode()], (v) => calc((R1)v[0], (R2)v[1]));
+    }
+
+    /// <inheritdoc cref="Effect(Action)"/>
+    public IEffect Effect<T, R1, R2, R3>(IRead<R1> r1, IRead<R2> r2, IRead<R3> r3, Action<R1, R2, R3> calc)
+    where T : notnull
+    {
+        return FixedEffectNode.Effect([r1.ValueNode(), r2.ValueNode(), r3.ValueNode()], (v) => calc((R1)v[0], (R2)v[1], (R3)v[2]));
+    }
+
+    /// <inheritdoc cref="Effect(Action)"/>
+    public IEffect Effect<T, R1, R2, R3, R4>(IRead<R1> r1, IRead<R2> r2, IRead<R3> r3, IRead<R4> r4, Action<R1, R2, R3, R4> calc)
+    where T : notnull
+    {
+        return FixedEffectNode.Effect([r1.ValueNode(), r2.ValueNode(), r3.ValueNode(), r4.ValueNode()], (v) => calc((R1)v[0], (R2)v[1], (R3)v[2], (R4)v[3]));
+    }
+
+    /// <inheritdoc cref="Effect(Action)"/>
+    public IEffect Effect<T, R1, R2, R3, R4, R5>(IRead<R1> r1, IRead<R2> r2, IRead<R3> r3, IRead<R4> r4, IRead<R5> r5, Action<R1, R2, R3, R4, R5> calc)
+    where T : notnull
+    {
+        return FixedEffectNode.Effect([r1.ValueNode(), r2.ValueNode(), r3.ValueNode(), r4.ValueNode(), r5.ValueNode()], (v) => calc((R1)v[0], (R2)v[1], (R3)v[2], (R4)v[3], (R5)v[4]));
+    }
 }
