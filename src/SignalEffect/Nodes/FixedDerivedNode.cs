@@ -6,7 +6,7 @@ where T : notnull
     private readonly List<IValueNode> m_Deps;
     private readonly Func<object[], T> m_Callback;
 
-    private FixedDerivedNode(ICallTrack track, List<IValueNode> dependencies, Func<object[], T> calculation) : base(track)
+    private FixedDerivedNode(CallTrack track, List<IValueNode> dependencies, Func<object[], T> calculation) : base(track)
     {
         m_Deps = dependencies;
         m_Callback = calculation;
@@ -32,7 +32,7 @@ where T : notnull
         Update(m_Deps, false, !Equals(val, m_Value));
     }
 
-    public static IDerived<T> Derived(ICallTrack track, List<IValueNode> dependencies, Func<object[], T> calculation)
+    public static IDerived<T> Derived(CallTrack track, List<IValueNode> dependencies, Func<object[], T> calculation)
     {
         var d = new FixedDerivedNode<T>(track, dependencies, calculation).AsDerived();
         track.Add(d);

@@ -2,7 +2,7 @@ namespace SignalEffect;
 
 internal abstract class SignalNode : Node
 {
-    protected SignalNode(ICallTrack track) : base(track, NextN())
+    protected SignalNode(CallTrack track) : base(track, NextN())
     {
     }
 
@@ -13,7 +13,7 @@ internal class SignalNode<T> : SignalNode, IValueNode
 where T : notnull
 {
     private T m_Value;
-    public SignalNode(ICallTrack track, T value) : base(track)
+    public SignalNode(CallTrack track, T value) : base(track)
     {
         m_Value = value;
         Out = [];
@@ -63,7 +63,7 @@ where T : notnull
         Track.Exit();
     }
 
-    public static IWrite<T> Signal(ICallTrack track, T initial)
+    public static IWrite<T> Signal(CallTrack track, T initial)
     {
         return new SignalNode<T>(track, initial).AsWritable();
     }

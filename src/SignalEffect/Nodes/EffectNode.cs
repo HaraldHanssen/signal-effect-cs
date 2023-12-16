@@ -2,7 +2,7 @@ namespace SignalEffect;
 
 internal abstract class EffectNode : DependentNode
 {
-    protected EffectNode(ICallTrack track) : base(track)
+    protected EffectNode(CallTrack track) : base(track)
     {
         In = [];
     }

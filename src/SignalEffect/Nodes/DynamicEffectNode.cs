@@ -4,7 +4,7 @@ internal class DynamicEffectNode : EffectNode
 {
     private readonly Action m_Callback;
 
-    private DynamicEffectNode(ICallTrack track, Action action) : base(track)
+    private DynamicEffectNode(CallTrack track, Action action) : base(track)
     {
         m_Callback = action;
     }
@@ -27,7 +27,7 @@ internal class DynamicEffectNode : EffectNode
         Update(deps, true, false);
     }
 
-    public static IEffect Effect(ICallTrack track, Action action) {
+    public static IEffect Effect(CallTrack track, Action action) {
         var e = new DynamicEffectNode(track, action).AsEffect();
         track.Add(e);
         return e;

@@ -2,7 +2,7 @@ namespace SignalEffect;
 
 internal abstract class DerivedNode : DependentNode
 {
-    protected DerivedNode(ICallTrack track) : base(track)
+    protected DerivedNode(CallTrack track) : base(track)
     {
     }
 
@@ -14,7 +14,7 @@ where T : notnull
 {
     protected T? m_Value;
 
-    protected DerivedNode(ICallTrack track) : base(track)
+    protected DerivedNode(CallTrack track) : base(track)
     {
         In = [];
         Out = [];

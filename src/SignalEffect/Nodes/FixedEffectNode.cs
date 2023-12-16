@@ -5,7 +5,7 @@ internal class FixedEffectNode : EffectNode
     private readonly List<IValueNode> m_Deps;
     private readonly Action<object[]> m_Callback;
 
-    private FixedEffectNode(ICallTrack track, List<IValueNode> dependencies, Action<object[]> action) : base(track)
+    private FixedEffectNode(CallTrack track, List<IValueNode> dependencies, Action<object[]> action) : base(track)
     {
         m_Deps = dependencies;
         m_Callback = action;
@@ -30,7 +30,7 @@ internal class FixedEffectNode : EffectNode
         Update(m_Deps, false, false);
     }
 
-    public static IEffect Effect(ICallTrack track, List<IValueNode> dependencies, Action<object[]> action) {
+    public static IEffect Effect(CallTrack track, List<IValueNode> dependencies, Action<object[]> action) {
         var e = new FixedEffectNode(track, dependencies, action).AsEffect();
         track.Add(e);
         return e;

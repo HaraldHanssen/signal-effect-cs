@@ -8,12 +8,12 @@ internal abstract class Node
     public NodeId Id { get; private set; }
     public SequenceNumber Current { get; protected set; }
 
-    protected ICallTrack Track { get; }
+    protected CallTrack Track { get; }
 
     protected InMap? In { get; set; }
     protected OutMap? Out { get; set; }
 
-    protected Node(ICallTrack track, SequenceNumber current)
+    protected Node(CallTrack track, SequenceNumber current)
     {
         Id = NextId();
         Track = track;
