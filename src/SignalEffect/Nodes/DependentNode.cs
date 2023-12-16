@@ -47,7 +47,6 @@ internal abstract class DependentNode : Node
         {
             foreach (var dep in deps)
             {
-                Link(dep, this);
                 if (dep.Current > Current) Current = dep.Current;
             }
         }

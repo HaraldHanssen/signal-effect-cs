@@ -38,9 +38,9 @@ internal class CallTrack
         m_Depth++;
     }
 
-    public void Handle(DependentNode dependentNode, SequenceNumber current)
+    public void Handle(Node node, SequenceNumber current)
     {
-        m_Handles.Add((dependentNode, current));
+        m_Handles.Add((node, current));
     }
 
     public void Exit()

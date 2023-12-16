@@ -49,7 +49,7 @@ where T : notnull
         Track.Enter();
         m_Value = value;
         Current = NextN();
-        //TODO handle(this, this.current);
+        Track.Handle(this, Current);
         Track.Exit();
     }
 
@@ -59,7 +59,7 @@ where T : notnull
         Track.Enter();
         manipulate(m_Value);
         Current = NextN();
-        //TODO handle(this, this.current);
+        Track.Handle(this, Current);
         Track.Exit();
     }
 

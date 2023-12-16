@@ -50,4 +50,25 @@ public static class ScopeExtensions
     {
         return s.Derived(r1, r2, r3, r4, r5, calc);
     }
+
+    public static void Deconstruct<T>(this T[] list, out T first, out T[] rest)
+    {
+        first = list.Length > 0 ? list[0] : throw new ArgumentOutOfRangeException(nameof(list));
+        rest = list[1..];
+    }
+
+    public static void Deconstruct<T>(this T[] list, out T first, out T second, out T[] rest)
+    {
+        first = list.Length > 0 ? list[0] : throw new ArgumentOutOfRangeException(nameof(list));
+        second = list.Length > 1 ? list[1] : throw new ArgumentOutOfRangeException(nameof(list));
+        rest = list[2..];
+    }
+
+    public static void Deconstruct<T>(this T[] list, out T first, out T second, out T third, out T[] rest)
+    {
+        first = list.Length > 0 ? list[0] : throw new ArgumentOutOfRangeException(nameof(list));
+        second = list.Length > 1 ? list[1] : throw new ArgumentOutOfRangeException(nameof(list));
+        third = list.Length > 2 ? list[2] : throw new ArgumentOutOfRangeException(nameof(list));
+        rest = list[3..];
+    }
 }

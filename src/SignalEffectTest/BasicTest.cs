@@ -51,4 +51,72 @@ public class BasicTest
         Assert.AreEqual(4, theArray.Get()[0]);
         Assert.AreEqual(2, theArray.Get()[1]);
     }
+
+    [TestMethod]
+    public void CalcDerivedValueOf1Signal()
+    {
+        var calculated = 0;
+        var s = Q.Signal(42);
+        var d = Q.Derived(s, (x) =>
+        {
+            calculated++;
+            return 2 * x;
+        });
+        Assert.AreEqual(0, calculated);
+        Assert.AreEqual(84, d.Get());
+        Assert.AreEqual(1, calculated);
+        s.Set(43);
+        Assert.AreEqual(1, calculated);
+        Assert.AreEqual(86, d.Get());
+        Assert.AreEqual(2, calculated);
+        Assert.AreEqual(86, d.Get());
+        Assert.AreEqual(2, calculated);
+    }
+
+    [TestMethod]
+    public void CalcDerivedValueOf2Signals()
+    {
+        var calculated = 0;
+        var (s, t, _) = Q.Signals(42, 4);
+        var d = Q.Derived(s, t, (x, y) =>
+        {
+            Assert.AreNotEqual(x, y);
+            calculated++;
+            return x + y;
+        });
+        Assert.AreEqual(46, d.Get());
+        Assert.AreEqual(1, calculated);
+        t.Set(3);
+        Assert.AreEqual(45, d.Get());
+        Assert.AreEqual(2, calculated);
+        s.Set(41);
+        Assert.AreEqual(44, d.Get());
+        Assert.AreEqual(3, calculated);
+        Assert.AreEqual(44, d.Get());
+        Assert.AreEqual(3, calculated);
+    }
+
+    [TestMethod]
+    public void CalcDerivedValueOfNSignals()
+    {
+        var calculated = 0;
+        var (s, t, _) = Q.Signals(42, 4);
+        var d = Q.Derived([s, t], (a) =>
+        {
+            var (x, y, _) = a;
+            Assert.AreNotEqual(x, y);
+            calculated++;
+            return x + y;
+        });
+        Assert.AreEqual(46, d.Get());
+        Assert.AreEqual(1, calculated);
+        t.Set(3);
+        Assert.AreEqual(45, d.Get());
+        Assert.AreEqual(2, calculated);
+        s.Set(41);
+        Assert.AreEqual(44, d.Get());
+        Assert.AreEqual(3, calculated);
+        Assert.AreEqual(44, d.Get());
+        Assert.AreEqual(3, calculated);
+    }
 }
