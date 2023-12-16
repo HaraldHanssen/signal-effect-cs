@@ -1,7 +1,7 @@
 
 namespace SignalEffect;
 
-public partial class Scope : IDisposable
+public class Scope : IDisposable
 {
     private readonly CallTrack m_Track;
     private bool m_Disposed;
