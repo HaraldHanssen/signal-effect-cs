@@ -17,25 +17,25 @@ where T : notnull
     {
         var values = m_Deps.Select(x => x.GetValue(check)).ToArray();
         var val = m_Value;
-        //TODO const prev = track;
+        var prev = Track.State;
         try
         {
-            //TODO track = { deps: undefined, nocall: true, nowrite: true };
+            Track.State = new CallState(null, true, true);
             Visited = true;
             m_Value = m_Callback(values);
         }
         finally
         {
             Visited = false;
-            //TODO track = prev;
+            Track.State = prev;
         }
         Update(m_Deps, false, !Equals(val, m_Value));
     }
 
-    public static Derived<T> Derived(ICallTrack track, List<IValueNode> dependencies, Func<object[], T> calculation)
+    public static IDerived<T> Derived(ICallTrack track, List<IValueNode> dependencies, Func<object[], T> calculation)
     {
         var d = new FixedDerivedNode<T>(track, dependencies, calculation).AsDerived();
-        //TODO execution.handler.changed(undefined, [d], undefined);
+        track.Add(d);
         return d;
     }
 }

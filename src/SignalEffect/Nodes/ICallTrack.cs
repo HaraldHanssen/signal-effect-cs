@@ -4,10 +4,12 @@ internal interface ICallTrack
 {
     CallState State { get; set; }
 
-    void Add(Effect e);
+    void Add(IEffect e);
     
-    void Add<T>(Derived<T> d) where T : notnull;
+    void Add<T>(IDerived<T> d) where T : notnull;
 
+    void Changed(IRead read, List<IDerived> deriveds, List<IEffect> effects);
+    
     void Enter();
 
     void Exit();

@@ -1,20 +1,27 @@
 namespace SignalEffect;
 
-internal abstract class DerivedNode<T> : DependentNode, IValueNode
+internal abstract class DerivedNode : DependentNode
+{
+    protected DerivedNode(ICallTrack track) : base(track)
+    {
+    }
+
+    public abstract IDerived AsDerived();
+}
+
+internal abstract class DerivedNode<T> : DerivedNode, IValueNode
 where T : notnull
 {
     protected T? m_Value;
 
-    protected DerivedNode(ICallTrack track) : base()
+    protected DerivedNode(ICallTrack track) : base(track)
     {
         In = [];
         Out = [];
-        Track = track;
     }
 
-    protected ICallTrack Track { get; }
-
-    public Derived<T> AsDerived() {
+    public override IDerived<T> AsDerived()
+    {
         return new Derived<T>(Id, this, Fun);
     }
 

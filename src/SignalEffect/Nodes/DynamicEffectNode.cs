@@ -27,7 +27,7 @@ internal class DynamicEffectNode : EffectNode
         Update(deps, true, false);
     }
 
-    public static Effect Effect(ICallTrack track, Action action) {
+    public static IEffect Effect(ICallTrack track, Action action) {
         var e = new DynamicEffectNode(track, action).AsEffect();
         track.Add(e);
         return e;

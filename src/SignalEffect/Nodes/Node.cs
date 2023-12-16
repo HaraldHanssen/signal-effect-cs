@@ -8,13 +8,73 @@ internal abstract class Node
     public NodeId Id { get; private set; }
     public SequenceNumber Current { get; protected set; }
 
+    protected ICallTrack Track { get; }
+
     protected InMap? In { get; set; }
     protected OutMap? Out { get; set; }
 
-    protected Node(SequenceNumber current)
+    protected Node(ICallTrack track, SequenceNumber current)
     {
         Id = NextId();
+        Track = track;
         Current = current;
+    }
+
+    protected void Notify(SequenceNumber current) {
+        //TODO if (diagnostic?.enabled) diagnostic.counters.notify++;
+        // Notify execution handler
+        List<IDerived> deriveds = [];
+        List<IEffect> effects = [];
+
+        // Logic:
+        // Traverse out and alert dependants. Stop traversal on nodes that already are alerted.
+        // Send this._out to execution handler.
+
+        List<Node> traverse = [this];
+        for (var i = 0; i < traverse.Count; i++) {
+            var source = traverse[i];
+            if (source.Out == null) continue;
+            foreach (var (k, v) in source.Out) {
+                // clean
+                if (!v.TryGetTarget(out var d) || d.Dropped) {
+                    source.Out!.Remove(k);
+                    continue;
+                }
+
+                // traverse dependencies for alert
+                if (d.Alert(current)) {
+                    if (d is DerivedNode) {
+                        traverse.Add(d);
+                    }
+                };
+
+                // gather this._out
+                if (i == 0) {
+                    if (d is DerivedNode dd) {
+                        deriveds.Add(dd.AsDerived());
+                    }
+                    if (d is EffectNode ee) {
+                        effects.Add(ee.AsEffect());
+                    }
+                }
+            }
+        }
+
+        //TODO if (diagnostic?.enabled) diagnostic.counters.notifyDeps += deriveds.length + effects.length;
+
+        var prev = Track.State;
+        try {
+            Track.State = new CallState(null, false, false);
+            if (this is SignalNode sn) {
+                Track.Changed(sn.AsReadable(), deriveds, effects);
+            }
+            else if (this is DerivedNode dn) {
+                Track.Changed(dn.AsDerived(), deriveds, effects);
+            }
+        }
+        finally {
+            Track.State = prev;
+        }
     }
     
     protected void Handle(DependentNode dependentNode, SequenceNumber current)

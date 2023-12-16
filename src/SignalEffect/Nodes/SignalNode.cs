@@ -1,13 +1,20 @@
 namespace SignalEffect;
 
-internal class SignalNode<T> : Node, IValueNode
+internal abstract class SignalNode : Node
+{
+    protected SignalNode(ICallTrack track) : base(track, NextN())
+    {
+    }
+
+    public abstract IRead AsReadable();
+}
+
+internal class SignalNode<T> : SignalNode, IValueNode
 where T : notnull
 {
-    private readonly ICallTrack m_Track;
     private T m_Value;
-    public SignalNode(ICallTrack track, T value) : base(NextN())
+    public SignalNode(ICallTrack track, T value) : base(track)
     {
-        m_Track = track;
         m_Value = value;
         Out = [];
     }
@@ -19,7 +26,7 @@ where T : notnull
         return new Write<T>(Id, this, RFun, WFun);
     }
 
-    public IRead<T> AsReadable()
+    public override IRead<T> AsReadable()
     {
         return new Read<T>(Id, this, RFun);
     }
@@ -31,29 +38,29 @@ where T : notnull
 
     private T RFun()
     {
-        //TODO track.deps?.push(this);
+        Track.State.Dependencies?.Add(this);
         return m_Value;
     }
 
     private void WFun(T value)
     {
-        //TODO if (track.nowrite) throw new ReentryError(ERR_WRITE);
+        if (Track.State.NoWrite) throw new ReentryException(ReentryException.ERR_WRITE);
         if (Equals(m_Value, value)) return;
-        //TODO enter();
+        Track.Enter();
         m_Value = value;
         Current = NextN();
         //TODO handle(this, this.current);
-        //TODO exit();
+        Track.Exit();
     }
 
     private void MFun(Action<T> manipulate)
     {
-        //TODO if (track.nowrite) throw new ReentryError(ERR_WRITE);
-        //TODO enter();
+        if (Track.State.NoWrite) throw new ReentryException(ReentryException.ERR_WRITE);
+        Track.Enter();
         manipulate(m_Value);
         Current = NextN();
         //TODO handle(this, this.current);
-        //TODO exit();
+        Track.Exit();
     }
 
     public static IWrite<T> Signal(ICallTrack track, T initial)

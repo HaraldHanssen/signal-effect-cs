@@ -29,7 +29,7 @@ where T : notnull
         Update(deps, true, !Equals(val, m_Value));
     }
 
-    public static Derived<T> Derived(ICallTrack track, Func<T> calculation)
+    public static IDerived<T> Derived(ICallTrack track, Func<T> calculation)
     {
         var d = new DynamicDerivedNode<T>(track, calculation).AsDerived();
         track.Add(d);

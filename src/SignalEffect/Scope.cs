@@ -1,3 +1,4 @@
+
 namespace SignalEffect;
 
 public class Scope : IDisposable
@@ -177,14 +178,19 @@ public class Scope : IDisposable
         public CallState State { get; set; } = new CallState(null, false, false);
 
 
-        void ICallTrack.Add(Effect e)
+        void ICallTrack.Add(IEffect e)
         {
             m_Handler.Changed(null, null, [e]);
         }
 
-        public void Add<T>(Derived<T> d) where T : notnull
+        public void Add<T>(IDerived<T> d) where T : notnull
         {
             m_Handler.Changed(null, [d], null);
+        }
+
+        public void Changed(IRead read, List<IDerived> deriveds, List<IEffect> effects)
+        {
+            m_Handler.Changed(read, deriveds, effects);
         }
 
         public void Enter()

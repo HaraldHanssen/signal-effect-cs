@@ -30,7 +30,7 @@ internal class FixedEffectNode : EffectNode
         Update(m_Deps, false, false);
     }
 
-    public static Effect Effect(ICallTrack track, List<IValueNode> dependencies, Action<object[]> action) {
+    public static IEffect Effect(ICallTrack track, List<IValueNode> dependencies, Action<object[]> action) {
         var e = new FixedEffectNode(track, dependencies, action).AsEffect();
         track.Add(e);
         return e;
