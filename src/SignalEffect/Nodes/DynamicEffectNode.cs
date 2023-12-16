@@ -4,7 +4,7 @@ internal class DynamicEffectNode : EffectNode
 {
     private readonly Action m_Callback;
 
-    private DynamicEffectNode(Action action)
+    private DynamicEffectNode(ICallTrack track, Action action) : base(track)
     {
         m_Callback = action;
     }
@@ -27,8 +27,8 @@ internal class DynamicEffectNode : EffectNode
         Update(deps, true, false);
     }
 
-    public static Effect Effect(Action action) {
-        var e = new DynamicEffectNode(action).AsEffect();
+    public static Effect Effect(ICallTrack track, Action action) {
+        var e = new DynamicEffectNode(track, action).AsEffect();
         //TODO execution.handler.changed(undefined, undefined, [e]);
         return e;
     }

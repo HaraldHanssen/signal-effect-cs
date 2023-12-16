@@ -6,7 +6,7 @@ where T : notnull
     private readonly List<IValueNode> m_Deps;
     private readonly Func<object[], T> m_Callback;
 
-    private FixedDerivedNode(List<IValueNode> dependencies, Func<object[], T> calculation)
+    private FixedDerivedNode(ICallTrack track, List<IValueNode> dependencies, Func<object[], T> calculation) : base(track)
     {
         m_Deps = dependencies;
         m_Callback = calculation;
@@ -32,9 +32,9 @@ where T : notnull
         Update(m_Deps, false, !Equals(val, m_Value));
     }
 
-    public static Derived<T> Derived(List<IValueNode> dependencies, Func<object[], T> calculation)
+    public static Derived<T> Derived(ICallTrack track, List<IValueNode> dependencies, Func<object[], T> calculation)
     {
-        var d = new FixedDerivedNode<T>(dependencies, calculation).AsDerived();
+        var d = new FixedDerivedNode<T>(track, dependencies, calculation).AsDerived();
         //TODO execution.handler.changed(undefined, [d], undefined);
         return d;
     }

@@ -2,10 +2,13 @@ namespace SignalEffect;
 
 internal abstract class EffectNode : DependentNode
 {
-    protected EffectNode()
+    protected EffectNode(ICallTrack track)
     {
         In = [];
+        Track = track;
     }
+
+    protected ICallTrack Track { get; }
 
     protected Effect AsEffect() {
         return new Effect(Id, this, Fun);

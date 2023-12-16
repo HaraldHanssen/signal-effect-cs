@@ -3,9 +3,11 @@ namespace SignalEffect;
 internal class SignalNode<T> : Node, IValueNode
 where T : notnull
 {
+    private readonly ICallTrack m_Track;
     private T m_Value;
-    public SignalNode(T value) : base(NextN())
+    public SignalNode(ICallTrack track, T value) : base(NextN())
     {
+        m_Track = track;
         m_Value = value;
         Out = [];
     }
@@ -54,9 +56,9 @@ where T : notnull
         //TODO exit();
     }
 
-    public static IWrite<T> Signal(T initial)
+    public static IWrite<T> Signal(ICallTrack track, T initial)
     {
-        return new SignalNode<T>(initial).AsWritable();
+        return new SignalNode<T>(track, initial).AsWritable();
     }
 
     public static IRead<T> Readonly(IWrite<T> signal)

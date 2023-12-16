@@ -4,11 +4,15 @@ internal abstract class DerivedNode<T> : DependentNode, IValueNode
 where T : notnull
 {
     protected T? m_Value;
-    protected DerivedNode() : base()
+
+    protected DerivedNode(ICallTrack track) : base()
     {
         In = [];
         Out = [];
+        Track = track;
     }
+
+    protected ICallTrack Track { get; }
 
     public Derived<T> AsDerived() {
         return new Derived<T>(Id, this, Fun);
