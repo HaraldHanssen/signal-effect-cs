@@ -5,7 +5,7 @@ namespace SignalEffectTest;
 [TestClass]
 public class BasicTest
 {
-    private static readonly Scope M = Scope.Default;
+    private static readonly Scope<ManualExecution> M = Scope.DefaultManual;
 
     [TestMethod]
     public void GetSignalValue()
@@ -231,5 +231,83 @@ public class BasicTest
         Assert.AreEqual(3, acted);
     }
 
-    //TODO From line 220
+    [TestMethod]
+    public void UpdateOfDerivedWillOnlyTriggerOncePerProvidedElement()
+    {
+        var calculated = 0;
+        var (s, t, u, _) = M.Signals(42, 4, 2);
+        var a = M.Derived(s, t, u, (x, y, z) =>
+        {
+            calculated++;
+            return $"{x}:{y}:{z}";
+        });
+        var b = M.Derived(s, t, u, (x, y, z) =>
+        {
+            calculated++;
+            return x + y + z;
+        });
+        var c = M.Derived(s, t, u, (x, y, z) =>
+        {
+            calculated++;
+            return $"{z}:{y}:{x}";
+        });
+        var d = M.Derived(a, b, c, (x, y, z) =>
+        {
+            calculated++;
+            return $"{x}:{y}:{z}";
+        });
+        var e = M.Derived(b, d, (x, y) =>
+        {
+            calculated++;
+            return $"{x}:{y}";
+        });
+        Assert.AreEqual(0, calculated);
+        M.Handler.Update([a, b, c, d, e]);
+        Assert.AreEqual(5, calculated);
+        Assert.AreEqual("42:4:2", a.Get());
+        Assert.AreEqual(48, b.Get());
+        Assert.AreEqual("2:4:42", c.Get());
+        Assert.AreEqual("42:4:2:48:2:4:42", d.Get());
+        Assert.AreEqual("48:42:4:2:48:2:4:42", e.Get());
+        M.Handler.Update([a, b, c, d, e]);
+        Assert.AreEqual(5, calculated); // not called
+        Assert.AreEqual("42:4:2", a.Get());
+        Assert.AreEqual(48, b.Get());
+        Assert.AreEqual("2:4:42", c.Get());
+        Assert.AreEqual("42:4:2:48:2:4:42", d.Get());
+        Assert.AreEqual("48:42:4:2:48:2:4:42", e.Get());
+    }
+
+    [TestMethod]
+    public void UpdateOfDerivedWillTriggerForTransitiveDependencyChange()
+    {
+        var calculated = 0;
+        var (s, t, u, _) = M.Signals(42, 4, 2);
+        var a = M.Derived(s, t, (x, y) => {
+            calculated++;
+            return x + y;
+        });
+        var b = M.Derived(u, (x) => {
+            calculated++;
+            return 2 * x;
+        });
+        var c = M.Derived(a, b, (x, y) => {
+            calculated++;
+            return x + y;
+        });
+        Assert.AreEqual(0, calculated);
+        M.Handler.Update([c]);
+        Assert.AreEqual(3, calculated);
+        Assert.AreEqual(42 + 4, a.Get());
+        Assert.AreEqual(2 * 2, b.Get());
+        Assert.AreEqual(42 + 4 + 2 * 2, c.Get());
+        u.Set(3);
+        M.Handler.Update([c]);
+        Assert.AreEqual(5, calculated); // a is not recalculated
+        Assert.AreEqual(42 + 4 + 2 * 3, c.Get());
+        Assert.AreEqual(2 * 3, b.Get());
+        Assert.AreEqual(42 + 4, a.Get());
+    }
+
+    //TODO From line 289
 }

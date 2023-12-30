@@ -3,15 +3,13 @@ namespace SignalEffect;
 
 internal class CallTrack
 {
-    private readonly Scope m_Scope;
     private readonly IExecution m_Handler;
     private readonly List<(Node, SequenceNumber)> m_Handles = [];
     private uint m_Depth;
     private bool m_Processing;
 
-    public CallTrack(Scope scope, IExecution handler)
+    public CallTrack(IExecution handler)
     {
-        m_Scope = scope;
         m_Handler = handler;
     }
 

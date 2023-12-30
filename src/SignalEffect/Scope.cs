@@ -1,17 +1,17 @@
 
 namespace SignalEffect;
 
-public class Scope : IDisposable
+public abstract class Scope : IDisposable
 {
     private readonly CallTrack m_Track;
     private bool m_Disposed;
 
-    public Scope(IExecution? handler = null)
+    protected Scope(IExecution handler)
     {
-        m_Track = new CallTrack(this, handler ?? new ManualExecution());
+        m_Track = new CallTrack(handler);
     }
 
-    public static readonly Scope Default = new();
+    public static readonly Scope<ManualExecution> DefaultManual = new(new ManualExecution());
 
     /// <summary>
     /// Create a single writable signal with the provided initial value.
@@ -172,4 +172,17 @@ public class Scope : IDisposable
         Dispose(true);
         GC.SuppressFinalize(this);
     }
+}
+
+public class Scope<E> : Scope
+where E : IExecution
+{
+    private readonly E m_Handler;
+    public Scope(E handler) : base(handler)
+    {
+        m_Handler = handler;
+    }
+
+    public E Handler => m_Handler;
+
 }
