@@ -51,6 +51,16 @@ public static class ScopeExtensions
         return s.Derived(r1, r2, r3, r4, r5, calc);
     }
 
+    /// <inheritdoc cref="ManualExecution.Update(IEnumerable{IDerived})"/>
+    public static void Update(this Scope<ManualExecution> s, IEnumerable<IDerived> deriveds) {
+        s.Handler.Update(deriveds);
+    }
+
+    /// <inheritdoc cref="ManualExecution.Update(IEnumerable{IEffect})"/>
+    public static void Update(this Scope<ManualExecution> s, IEnumerable<IEffect> effects) {
+        s.Handler.Update(effects);
+    }
+
     public static void Deconstruct<T>(this T[] list, out T first, out T[] rest)
     {
         first = list.Length > 0 ? list[0] : throw new ArgumentOutOfRangeException(nameof(list));

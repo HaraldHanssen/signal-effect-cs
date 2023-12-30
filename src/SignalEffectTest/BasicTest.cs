@@ -262,14 +262,14 @@ public class BasicTest
             return $"{x}:{y}";
         });
         Assert.AreEqual(0, calculated);
-        M.Handler.Update([a, b, c, d, e]);
+        M.Update([a, b, c, d, e]);
         Assert.AreEqual(5, calculated);
         Assert.AreEqual("42:4:2", a.Get());
         Assert.AreEqual(48, b.Get());
         Assert.AreEqual("2:4:42", c.Get());
         Assert.AreEqual("42:4:2:48:2:4:42", d.Get());
         Assert.AreEqual("48:42:4:2:48:2:4:42", e.Get());
-        M.Handler.Update([a, b, c, d, e]);
+        M.Update([a, b, c, d, e]);
         Assert.AreEqual(5, calculated); // not called
         Assert.AreEqual("42:4:2", a.Get());
         Assert.AreEqual(48, b.Get());
@@ -296,13 +296,13 @@ public class BasicTest
             return x + y;
         });
         Assert.AreEqual(0, calculated);
-        M.Handler.Update([c]);
+        M.Update([c]);
         Assert.AreEqual(3, calculated);
         Assert.AreEqual(42 + 4, a.Get());
         Assert.AreEqual(2 * 2, b.Get());
         Assert.AreEqual(42 + 4 + 2 * 2, c.Get());
         u.Set(3);
-        M.Handler.Update([c]);
+        M.Update([c]);
         Assert.AreEqual(5, calculated); // a is not recalculated
         Assert.AreEqual(42 + 4 + 2 * 3, c.Get());
         Assert.AreEqual(2 * 3, b.Get());

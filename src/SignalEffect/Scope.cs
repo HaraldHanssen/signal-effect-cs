@@ -184,5 +184,4 @@ where E : IExecution
     }
 
     public E Handler => m_Handler;
-
 }
