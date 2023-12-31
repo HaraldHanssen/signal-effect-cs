@@ -283,15 +283,18 @@ public class BasicTest
     {
         var calculated = 0;
         var (s, t, u, _) = M.Signals(42, 4, 2);
-        var a = M.Derived(s, t, (x, y) => {
+        var a = M.Derived(s, t, (x, y) =>
+        {
             calculated++;
             return x + y;
         });
-        var b = M.Derived(u, (x) => {
+        var b = M.Derived(u, (x) =>
+        {
             calculated++;
             return 2 * x;
         });
-        var c = M.Derived(a, b, (x, y) => {
+        var c = M.Derived(a, b, (x, y) =>
+        {
             calculated++;
             return x + y;
         });
@@ -309,5 +312,80 @@ public class BasicTest
         Assert.AreEqual(42 + 4, a.Get());
     }
 
-    //TODO From line 289
+    [TestMethod]
+    public void UpdateOfEffectWillOnlyTriggerOncePerProvidedElement()
+    {
+        var acted = 0;
+        var calculated = 0;
+        var r1 = "";
+        var r2 = "";
+        var (s, t, u, _) = M.Signals(42, 4, 2);
+        var a = M.Derived(s, t, u, (x, y, z) => {
+            calculated++;
+            return $"{x}:{y}:{z}";
+        });
+        var b = M.Derived(s, t, u, (x, y, z) => {
+            calculated++;
+            return x + y + z;
+        });
+        var c = M.Derived(s, t, u, (x, y, z) => {
+            calculated++;
+            return $"{z}:{y}:{x}";
+        });
+        var d = M.Effect(a, b, c, (x, y, z) => {
+            acted++;
+            r1 = $"{x}:{y}:{z}";
+        });
+        var e = M.Effect(a, b, (x, y) => {
+            acted++;
+            r2 = $"{x}:{y}";
+        });
+        Assert.AreEqual(0, acted);
+        Assert.AreEqual(0, calculated);
+        M.Update([d, e]);
+        Assert.AreEqual(2, acted);
+        Assert.AreEqual(3, calculated);
+        Assert.AreEqual("42:4:2:48:2:4:42", r1);
+        Assert.AreEqual("42:4:2:48", r2);
+        M.Update([d, e]);
+        Assert.AreEqual(2, acted); // not called
+        Assert.AreEqual(3, calculated); // not called
+        Assert.AreEqual("42:4:2:48:2:4:42", r1);
+        Assert.AreEqual("42:4:2:48", r2);
+    }
+
+    [TestMethod]
+    public void UpdateOfEffectWillTriggerForTransitiveDependencyChange()
+    {
+        var acted = 0;
+        var calculated = 0;
+        var r1 = 0;
+        var (s, t, u, _) = M.Signals(42, 4, 2);
+
+        var a = M.Derived(s, t, (x, y) => {
+            calculated++;
+            return x + y;
+        });
+        var b = M.Derived(u, (x) => {
+            calculated++;
+            return 2 * x;
+        });
+        var c = M.Effect(a, b, (x, y) => {
+            acted++;
+            r1 = x + y;
+        });
+        Assert.AreEqual(0, calculated);
+        M.Update([c]);
+        Assert.AreEqual(1, acted);
+        Assert.AreEqual(2, calculated);
+        Assert.AreEqual(42 + 4, a.Get());
+        Assert.AreEqual(2 * 2, b.Get());
+        Assert.AreEqual(42 + 4 + 2 * 2, r1);
+        u.Set(3);
+        M.Update([c]);
+        Assert.AreEqual(3, calculated); // a is not recalculated
+        Assert.AreEqual(42 + 4 + 2 * 3, r1);
+        Assert.AreEqual(2 * 3, b.Get());
+        Assert.AreEqual(42 + 4, a.Get());
+    }
 }
